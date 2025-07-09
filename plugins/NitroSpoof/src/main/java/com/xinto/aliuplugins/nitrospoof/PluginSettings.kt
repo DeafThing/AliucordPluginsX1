@@ -8,6 +8,7 @@ import com.aliucord.api.SettingsAPI
 import com.aliucord.fragments.SettingsPage
 import com.aliucord.views.Button
 import com.aliucord.views.TextInput
+import com.aliucord.views.CheckedSetting
 
 class PluginSettings(
     private val settingsAPI: SettingsAPI
@@ -28,16 +29,24 @@ class PluginSettings(
             editText.maxLines = 1
         }
 
+        val hyperlinkToggle = CheckedSetting(context, CheckedSetting.ViewType.SWITCH).apply {
+            setTitle("Enable Hyperlink Emotes")
+            setSubtitle("Wrap emotes in markdown links (like BetterNitroSpoof). Requires MoreHighlight plugin to hide the hyperlink.")
+            isChecked = settingsAPI.getBoolean(HYPERLINK_ENABLED_KEY, HYPERLINK_ENABLED_DEFAULT)
+        }
+
         val saveButton = Button(context).apply {
             text = "Save"
             setOnClickListener {
                 settingsAPI.setString(EMOTE_SIZE_KEY, textInput.editText.text.toString())
+                settingsAPI.setBoolean(HYPERLINK_ENABLED_KEY, hyperlinkToggle.isChecked)
                 Utils.showToast("Successfully saved!")
                 close()
             }
         }
 
         addView(textInput)
+        addView(hyperlinkToggle)
         addView(saveButton)
     }
 }

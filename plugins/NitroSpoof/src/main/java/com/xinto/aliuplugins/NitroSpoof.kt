@@ -9,6 +9,8 @@ import com.aliucord.patcher.Hook
 import com.aliucord.patcher.InsteadHook
 import com.xinto.aliuplugins.nitrospoof.EMOTE_SIZE_DEFAULT
 import com.xinto.aliuplugins.nitrospoof.EMOTE_SIZE_KEY
+import com.xinto.aliuplugins.nitrospoof.HYPERLINK_ENABLED_KEY
+import com.xinto.aliuplugins.nitrospoof.HYPERLINK_ENABLED_DEFAULT
 import com.xinto.aliuplugins.nitrospoof.PluginSettings
 import com.discord.models.domain.emoji.ModelEmojiCustom
 import com.discord.stores.StoreExperiments
@@ -87,7 +89,14 @@ class NitroSpoof : Plugin() {
             finalUrl += "&size=${emoteSize}"
         }
         
-        callFrame.result = finalUrl
+        // Check if hyperlink functionality is enabled
+        val hyperlinkEnabled = settings.getBoolean(HYPERLINK_ENABLED_KEY, HYPERLINK_ENABLED_DEFAULT)
+        
+        callFrame.result = if (hyperlinkEnabled) {
+            "[$emoteName]($finalUrl)"
+        } else {
+            finalUrl
+        }
     }
 
     /**
